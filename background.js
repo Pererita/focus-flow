@@ -66,7 +66,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (settings.notificationAlerts) {
       chrome.notifications.create('posture-notif', {
         type: 'basic',
-        iconUrl: 'icons/icon128.png',
+        iconUrl: chrome.runtime.getURL('icons/icon128.png'),
         title: '🧘 ¡Hora de levantarse!',
         message: 'Llevas demasiado tiempo sentado. Levántate, camina y haz estiramientos leves por 2 minutos.',
         priority: 2
@@ -85,7 +85,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (settings.notificationAlerts) {
       chrome.notifications.create('hydration-notif', {
         type: 'basic',
-        iconUrl: 'icons/icon128.png',
+        iconUrl: chrome.runtime.getURL('icons/icon128.png'),
         title: '💧 ¡Hora de hidratarse!',
         message: 'Toma un sorbo de agua para mantener tu enfoque y energía en la oficina.',
         priority: 1
@@ -101,27 +101,43 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   }
 });
 
+// Guardar promesa global de creación para evitar condiciones de carrera en offscreen
+let creatingOffscreen = null;
+
 // Función para sintetizar y reproducir sonido de fondo a través de Offscreen
 async function playAlertSound() {
   try {
-    // Si no existe el documento offscreen, crearlo
-    if (!await chrome.offscreen.hasDocument()) {
-      await chrome.offscreen.createDocument({
+    if (creatingOffscreen) {
+      await creatingOffscreen;
+    } else if (!await chrome.offscreen.hasDocument()) {
+      creatingOffscreen = chrome.offscreen.createDocument({
         url: 'offscreen.html',
         reasons: ['AUDIO_PLAYBACK'],
         justification: 'Reproducir alertas sonoras sintetizadas para recordatorios de salud'
       });
+      try {
+        await creatingOffscreen;
+      } finally {
+        creatingOffscreen = null;
+      }
     }
     
     // Enviar mensaje para reproducir sonido
     chrome.runtime.sendMessage({ action: 'play_sound' }, (response) => {
-      // Ignorar errores de respuesta si el canal se cierra antes
       if (chrome.runtime.lastError) {
         // Silencioso
       }
     });
   } catch (err) {
-    console.error("Error al gestionar el audio en segundo plano:", err);
+    if (err.message && err.message.includes('Only a single offscreen document may be created')) {
+      chrome.runtime.sendMessage({ action: 'play_sound' }, (response) => {
+        if (chrome.runtime.lastError) {
+          // Silencioso
+        }
+      });
+    } else {
+      console.error("Error al gestionar el audio en segundo plano:", err);
+    }
   }
 }
 
