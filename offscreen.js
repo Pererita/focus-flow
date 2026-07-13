@@ -25,10 +25,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       playBeep(0.6, 0.15);
       playBeep(0.8, 0.15);
       
-      // Cerrar el contexto de audio tras finalizar la secuencia (1.2 segundos en total)
+      // Tercer bloque (beep beep)
+      playBeep(1.2, 0.15);
+      playBeep(1.4, 0.15);
+      
+      // Cerrar el contexto de audio tras finalizar la secuencia (1.8 segundos en total)
       setTimeout(() => {
         context.close();
-      }, 1200);
+      }, 1800);
       
       sendResponse({ status: "success" });
     } catch (e) {

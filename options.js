@@ -146,9 +146,13 @@ function testSound() {
     playBeep(0.6, 0.15);
     playBeep(0.8, 0.15);
     
+    // Tercer bloque (beep beep)
+    playBeep(1.2, 0.15);
+    playBeep(1.4, 0.15);
+    
     setTimeout(() => {
       context.close();
-    }, 1200);
+    }, 1800);
   } catch (err) {
     console.error("Error al reproducir audio de prueba:", err);
   }
