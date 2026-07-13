@@ -1,0 +1,22 @@
+# Logs de Node
+logs
+*.log
+npm-debug.log*
+
+# Dependencias
+node_modules/
+
+# Archivos de configuración local e IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporales de compilación
+.temp_tailwind/
+package.json
+package-lock.json
+
+# Referencias de diseño
+design_reference/
+*.jpg

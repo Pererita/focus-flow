@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FocusFlow Popup</title>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="style.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: transparent;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .extension-container {
+            width: 360px;
+            height: 500px;
+            background-color: #f9f9f9;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0, 104, 95, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .circular-progress {
+            background: conic-gradient(
+                #008378 calc(var(--progress) * 1%),
+                #c3ecd7 0
+            );
+        }
+        .circular-progress-water {
+            background: conic-gradient(
+                #3b82f6 calc(var(--progress-water) * 1%),
+                #dbeafe 0
+            );
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface">
+    <div class="extension-container flex flex-col">
+        <!-- Header con el logo oficial auto_timer -->
+        <header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-container-padding py-3">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-2xl" data-icon="auto_timer">auto_timer</span>
+                <div class="flex flex-col">
+                    <span class="font-headline-md text-headline-md font-bold text-primary leading-tight">FocusFlow</span>
+                    <span class="font-label-md text-label-md text-on-surface-variant">Tu compañero de bienestar</span>
+                </div>
+            </div>
+            <button id="settingsBtn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-200">
+                <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+            </button>
+        </header>
+
+        <!-- Main Content Scroll Area -->
+        <main class="flex-1 overflow-y-auto px-container-padding py-stack-gap space-y-stack-gap">
+            
+            <!-- VIEW A: ERGONOMÍA -->
+            <div id="ergoView" class="space-y-stack-gap">
+                <!-- Timer Section -->
+                <div class="flex flex-col items-center py-unit">
+                    <div id="progressCircle" class="relative w-40 h-40 flex items-center justify-center rounded-full circular-progress shadow-sm transition-all" style="--progress: 100;">
+                        <!-- Inner Circle -->
+                        <div class="absolute inset-[8px] bg-white rounded-full flex flex-col items-center justify-center">
+                            <span id="timerText" class="font-headline-xl text-headline-xl text-primary">--:--</span>
+                        </div>
+                    </div>
+                    <p class="mt-stack-gap font-body-md text-on-surface-variant text-center max-w-[200px]">
+                        Próxima pausa de postura en
+                    </p>
+                    <div class="flex items-center space-x-stack-gap mt-stack-gap">
+                        <button id="pauseBtn" class="px-5 py-2 rounded-full border border-primary text-primary font-label-md hover:bg-surface-container-low active:scale-95 transition-all">
+                            Pausar
+                        </button>
+                        <button id="skipBtn" class="px-5 py-2 font-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+                            Omitir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bento Card: Checklist de Estiramientos -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-inner-padding shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-stack-gap">
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Estiramientos Rápidos (2 min)</h3>
+                        <span class="material-symbols-outlined text-primary text-lg">accessibility_new</span>
+                    </div>
+                    <div class="space-y-3">
+                        <!-- Checklist Item 1 -->
+                        <div class="checklist-item flex items-center space-x-3 group cursor-pointer">
+                            <div class="check-box w-5 h-5 rounded border-2 border-outline-variant flex items-center justify-center bg-white transition-colors group-hover:border-primary">
+                                <span class="material-symbols-outlined text-[16px] hidden check-icon text-primary" style="font-variation-settings: 'wght' 700;">check</span>
+                            </div>
+                            <span class="check-text font-body-md text-on-surface group-hover:text-primary transition-colors">Rotaciones de cuello</span>
+                        </div>
+                        <!-- Checklist Item 2 -->
+                        <div class="checklist-item flex items-center space-x-3 group cursor-pointer">
+                            <div class="check-box w-5 h-5 rounded border-2 border-outline-variant flex items-center justify-center bg-white transition-colors group-hover:border-primary">
+                                <span class="material-symbols-outlined text-[16px] hidden check-icon text-primary" style="font-variation-settings: 'wght' 700;">check</span>
+                            </div>
+                            <span class="check-text font-body-md text-on-surface group-hover:text-primary transition-colors">Giros de hombros</span>
+                        </div>
+                        <!-- Checklist Item 3 -->
+                        <div class="checklist-item flex items-center space-x-3 group cursor-pointer">
+                            <div class="check-box w-5 h-5 rounded border-2 border-outline-variant flex items-center justify-center bg-white transition-colors group-hover:border-primary">
+                                <span class="material-symbols-outlined text-[16px] hidden check-icon text-primary" style="font-variation-settings: 'wght' 700;">check</span>
+                            </div>
+                            <span class="check-text font-body-md text-on-surface group-hover:text-primary transition-colors">Torsión de torso</span>
+                        </div>
+                    </div>
+                    <button id="doneBtn" class="w-full mt-stack-gap bg-primary text-white py-3 rounded-full font-label-md hover:bg-primary-container active:scale-[0.98] transition-all shadow-sm">
+                        Listo
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW B: HIDRATACIÓN -->
+            <div id="hydraView" class="space-y-stack-gap hidden">
+                <!-- Water Progress Section -->
+                <div class="flex flex-col items-center py-unit">
+                    <div id="waterProgressCircle" class="relative w-40 h-40 flex items-center justify-center rounded-full circular-progress-water shadow-sm transition-all" style="--progress-water: 0;">
+                        <!-- Inner Circle -->
+                        <div class="absolute inset-[8px] bg-white rounded-full flex flex-col items-center justify-center">
+                            <span id="waterText" class="font-headline-lg text-headline-lg text-blue-600 font-bold">0 ml</span>
+                            <span id="waterGoalText" class="font-label-md text-on-surface-variant">de 2000 ml</span>
+                        </div>
+                    </div>
+                    <p class="mt-stack-gap font-body-md text-on-surface-variant text-center">
+                        Progreso de hidratación de hoy
+                    </p>
+                </div>
+
+                <!-- Bento Card: Log Water -->
+                <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-inner-padding shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between mb-stack-gap">
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Registrar Agua</h3>
+                        <span class="material-symbols-outlined text-blue-500 text-lg">local_drink</span>
+                    </div>
+                    <!-- Presets -->
+                    <div class="grid grid-cols-3 gap-2 mb-4">
+                        <button id="add250" class="py-2.5 rounded-full border border-blue-200 text-blue-600 font-label-md hover:bg-blue-50 active:scale-95 transition-all">+250ml</button>
+                        <button id="add330" class="py-2.5 rounded-full border border-blue-200 text-blue-600 font-label-md hover:bg-blue-50 active:scale-95 transition-all">+330ml</button>
+                        <button id="add500" class="py-2.5 rounded-full border border-blue-200 text-blue-600 font-label-md hover:bg-blue-50 active:scale-95 transition-all">+500ml</button>
+                    </div>
+                    <!-- Custom Input -->
+                    <div class="flex items-center space-x-2">
+                        <input id="customWaterInput" type="number" min="0" max="2000" placeholder="Otro (ml)" class="flex-1 bg-[#F1F5F9] border-outline-variant focus:border-blue-500 focus:ring-blue-500 rounded-full py-2 px-4 outline-none text-center font-bold text-blue-600" />
+                        <button id="addCustomBtn" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white py-2 px-5 rounded-full font-label-md transition-all">Añadir</button>
+                    </div>
+                    <!-- Reset -->
+                    <button id="resetWaterBtn" class="w-full mt-4 text-center text-xs text-on-surface-variant hover:text-red-500 transition-colors">
+                        Reiniciar Registro de Hoy
+                    </button>
+                </div>
+            </div>
+
+            <!-- Visual Decorative Element -->
+            <div class="relative h-12 w-full rounded-xl overflow-hidden mt-2">
+                <div class="absolute inset-0 bg-gradient-to-r from-background to-transparent flex items-center px-4">
+                    <span class="text-on-surface-variant font-label-md max-w-[200px]">Mantente constante, lo estás haciendo genial.</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Navigation / Tabs -->
+        <nav class="bg-surface border-t border-outline-variant flex justify-around items-center px-4 py-2 z-50">
+            <!-- Ergonomics Tab (Active) -->
+            <button id="ergoTabBtn" class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 duration-150 cursor-pointer">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">self_care</span>
+                <span class="font-label-md text-label-md">Ergonomía</span>
+            </button>
+            <!-- Hydration Tab -->
+            <button id="hydraTabBtn" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all active:scale-90 duration-150 cursor-pointer">
+                <span class="material-symbols-outlined">water_drop</span>
+                <span class="font-label-md text-label-md">Hidratación</span>
+            </button>
+        </nav>
+
+        <!-- Footer / Status Bar -->
+        <footer class="bg-surface-container-low px-container-padding py-1.5 flex items-center">
+            <span class="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+            <span id="statusText" class="font-label-md text-[10px] text-outline tracking-wider uppercase">Activo: Horario laboral (08:00 - 17:00)</span>
+        </footer>
+    </div>
+    <!-- Safelist de clases dinámicas para Tailwind v4:
+         bg-primary-container text-on-primary-container rounded-xl
+         text-on-surface-variant hover:bg-surface-container-high
+         hidden bg-white border-outline-variant border-primary-container
+         line-through opacity-60 text-white text-primary
+    -->
+    <script src="popup.js"></script>
+</body>
+</html>

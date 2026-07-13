@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FocusFlow - Configuración</title>
+    <link href="style.css" rel="stylesheet"/>
+    <link rel="icon" type="image/x-icon" href="icons/icon.ico"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-pill {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(30%) sepia(20%) saturate(500%) hue-rotate(130deg);
+        }
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked { right: 0; border-color: #006a61; background-color: #006a61; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #c3ecd7; }
+        
+        /* Help Modal Animation */
+        #helpModal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex overflow-hidden">
+    
+    <!-- LAYOUT: SIDEBAR COMPLETO A LA IZQUIERDA -->
+    <aside class="flex flex-col h-screen p-stack-gap bg-surface-container-low w-64 border-r border-outline-variant flex-shrink-0 z-50">
+        <!-- Logo de la Marca en el Sidebar -->
+        <div class="px-4 py-6 flex items-center gap-2 border-b border-outline-variant/30">
+            <span class="material-symbols-outlined text-primary text-2xl" data-icon="auto_timer">auto_timer</span>
+            <div class="flex flex-col">
+                <h1 class="font-headline-md text-headline-md font-bold text-primary leading-tight">FocusFlow</h1>
+                <span class="text-[10px] text-on-surface-variant font-semibold tracking-wider uppercase">Panel de Control</span>
+            </div>
+        </div>
+        
+        <!-- Navegación del Sidebar (Píldoras de tamaño reducido) -->
+        <nav class="flex-1 space-y-1.5 px-1 mt-4">
+            <a id="navSchedule" class="active-pill flex items-center gap-3 px-4 py-2.5 bg-secondary-container text-on-secondary-container rounded-full font-bold cursor-pointer transition-transform active:scale-[0.98]" href="#schedule">
+                <span class="material-symbols-outlined text-lg" data-icon="calendar_today">calendar_today</span>
+                <span class="font-body-md text-body-md">Horarios</span>
+            </a>
+            <a id="navGoals" class="flex items-center gap-3 px-4 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all cursor-pointer active:scale-[0.98]" href="#intervals">
+                <span class="material-symbols-outlined text-lg" data-icon="target">target</span>
+                <span class="font-body-md text-body-md">Metas</span>
+            </a>
+            <a id="navAlerts" class="flex items-center gap-3 px-4 py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all cursor-pointer active:scale-[0.98]" href="#alerts">
+                <span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+                <span class="font-body-md text-body-md">Alertas</span>
+            </a>
+        </nav>
+        
+        <!-- Acciones en el Footer del Sidebar -->
+        <div class="p-4 border-t border-outline-variant">
+            <button id="restoreBtnSidebar" class="w-full py-2.5 px-4 text-primary font-bold hover:bg-surface-container-high rounded-full transition-all text-xs">
+                Restablecer Valores
+            </button>
+        </div>
+    </aside>
+
+    <!-- CONTENEDOR DERECHO: HEADER + MAIN CONTENT -->
+    <div class="flex-1 h-screen flex flex-col overflow-hidden">
+        
+        <!-- Top AppBar -->
+        <header class="bg-surface border-b border-outline-variant flex justify-between items-center w-full px-6 h-14 z-40">
+            <div class="flex items-center gap-2">
+                <span id="sectionTitle" class="font-headline-md text-headline-md font-bold text-primary">Configuración de Horarios</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <!-- Botón de Ayuda en el Header -->
+                <button id="helpBtn" class="flex items-center gap-1.5 px-4 py-1.5 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full cursor-pointer active:scale-95 duration-200" title="Ayuda e Información Ergonómica">
+                    <span class="material-symbols-outlined text-lg" data-icon="help">help</span>
+                    <span class="font-label-md text-label-md">Ayuda</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area (Scrollable Interno) -->
+        <main class="flex-1 overflow-y-auto p-6 lg:p-8 relative">
+            <div class="max-w-4xl mx-auto space-y-section-gap">
+                
+                <!-- Sección 1: Horarios de Trabajo -->
+                <section class="glass-card rounded-[24px] p-inner-padding shadow-sm" id="schedule">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Horario Laboral</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="font-label-md text-label-md text-on-surface-variant">Inicio de Jornada</label>
+                            <input id="workdayStart" class="w-full bg-[#F1F5F9] border-outline-variant focus:border-primary focus:ring-primary rounded-xl p-3 outline-none transition-all" type="time" value="08:00"/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-label-md text-label-md text-on-surface-variant">Fin de Jornada</label>
+                            <input id="workdayEnd" class="w-full bg-[#F1F5F9] border-outline-variant focus:border-primary focus:ring-primary rounded-xl p-3 outline-none transition-all" type="time" value="17:00"/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-label-md text-label-md text-on-surface-variant">Inicio de Almuerzo</label>
+                            <input id="lunchStart" class="w-full bg-[#F1F5F9] border-outline-variant focus:border-primary focus:ring-primary rounded-xl p-3 outline-none transition-all" type="time" value="12:00"/>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="font-label-md text-label-md text-on-surface-variant">Fin de Almuerzo</label>
+                            <input id="lunchEnd" class="w-full bg-[#F1F5F9] border-outline-variant focus:border-primary focus:ring-primary rounded-xl p-3 outline-none transition-all" type="time" value="13:00"/>
+                        </div>
+                    </div>
+                    <label class="flex items-center gap-3 mt-8 cursor-pointer group">
+                        <div class="relative inline-block w-12 h-6 transition duration-200 ease-in-out bg-outline-variant rounded-full group-hover:bg-outline">
+                            <input id="weekendTracking" class="absolute block w-6 h-6 bg-white border-4 border-transparent rounded-full appearance-none cursor-pointer peer checked:translate-x-6 transition-transform" type="checkbox"/>
+                            <div class="w-full h-full bg-outline-variant peer-checked:bg-primary-container rounded-full transition-colors"></div>
+                        </div>
+                        <span class="font-body-md text-on-surface">Activar seguimiento en fines de semana</span>
+                    </label>
+                </section>
+
+                <!-- Sección 2: Metas e Intervalos -->
+                <section class="glass-card rounded-[24px] p-inner-padding shadow-sm" id="intervals">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-secondary" data-icon="timer">timer</span>
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Intervalos y Metas</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-4 bg-surface-container rounded-2xl">
+                            <label class="block font-label-md text-label-md text-on-surface-variant mb-2">Pausa de Postura (min)</label>
+                            <div class="flex items-center gap-2">
+                                <input id="postureInterval" class="w-full bg-white border-none rounded-lg p-2 font-bold text-primary" type="number" value="30"/>
+                                <span class="text-on-surface-variant material-symbols-outlined" data-icon="accessibility_new">accessibility_new</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-surface-container rounded-2xl">
+                            <label class="block font-label-md text-label-md text-on-surface-variant mb-2">Recordatorio de Agua (min)</label>
+                            <div class="flex items-center gap-2">
+                                <input id="hydrationInterval" class="w-full bg-white border-none rounded-lg p-2 font-bold text-primary" type="number" value="60"/>
+                                <span class="text-on-surface-variant material-symbols-outlined" data-icon="water_drop">water_drop</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-surface-container rounded-2xl">
+                            <label class="block font-label-md text-label-md text-on-surface-variant mb-2">Meta de Agua Diaria (ml)</label>
+                            <div class="flex items-center gap-2">
+                                <input id="waterGoal" class="w-full bg-white border-none rounded-lg p-2 font-bold text-primary" type="number" value="2000"/>
+                                <span class="text-on-surface-variant material-symbols-outlined" data-icon="local_drink">local_drink</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección 3: Alertas y Notificaciones -->
+                <section class="glass-card rounded-[24px] p-inner-padding shadow-sm" id="alerts">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-tertiary" data-icon="notifications_active">notifications_active</span>
+                        </div>
+                        <h3 class="font-headline-md text-headline-md text-on-surface">Notificaciones</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center p-4 bg-[#F8FAFC] rounded-2xl">
+                            <div class="flex flex-col">
+                                <span class="font-body-lg font-bold text-on-surface">Notificaciones del Sistema</span>
+                                <span class="text-sm text-on-surface-variant">Alertas flotantes de Chrome para cada recordatorio</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input id="notificationAlerts" class="sr-only peer" type="checkbox"/>
+                                <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center p-4 bg-[#F8FAFC] rounded-2xl">
+                            <div class="flex flex-col">
+                                <span class="font-body-lg font-bold text-on-surface">Tono de Alerta Sintetizado</span>
+                                <span class="text-sm text-on-surface-variant">Reproduce un sonido armónico al vencer el tiempo</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input id="audioAlerts" class="sr-only peer" type="checkbox"/>
+                                <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                            </label>
+                        </div>
+                        <button id="testSoundBtn" class="flex items-center gap-2 px-4 py-2 text-primary font-bold bg-primary/5 hover:bg-primary/10 rounded-full transition-all mt-2">
+                            <span class="material-symbols-outlined text-sm" data-icon="volume_up">volume_up</span>
+                            Probar Alerta Sonora
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Acciones Finales -->
+                <div class="flex justify-end gap-4 pt-4 pb-12">
+                    <button id="restoreBtnFooter" class="px-8 py-3 font-bold text-primary bg-secondary-container hover:bg-secondary-fixed-dim transition-colors rounded-full">
+                        Restaurar Valores
+                    </button>
+                    <button id="saveBtn" class="px-12 py-3 font-bold text-white bg-primary hover:bg-surface-tint shadow-lg hover:shadow-primary/20 transition-all rounded-full transform active:scale-95">
+                        Guardar Configuración
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success Toast Banner -->
+            <div class="fixed bottom-10 left-1/2 -translate-x-1/2 translate-y-20 opacity-0 transition-all duration-500 z-50 pointer-events-none" id="successToast">
+                <div class="bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full shadow-2xl flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary-fixed" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                    <span class="font-body-md">¡Configuración guardada con éxito!</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL DE AYUDA (Interactivo, Centrado con desenfoque de fondo) -->
+    <div id="helpModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center opacity-0 invisible pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full mx-4 shadow-2xl border border-outline-variant flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between pb-4 border-b border-outline-variant">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-2xl">help_outline</span>
+                    <h2 class="font-headline-md text-headline-md font-bold text-primary">Ayuda e Información</h2>
+                </div>
+                <button id="closeHelpBtn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors cursor-pointer text-on-surface-variant">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto py-6 space-y-5 pr-2">
+                <div class="space-y-2">
+                    <h4 class="font-body-lg font-bold text-primary">🧘 Regla de Postura 20-8-2</h4>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Basada en estudios ergonómicos de la Universidad de Cornell, esta regla aconseja que por cada 30 minutos de trabajo laboral:
+                    </p>
+                    <ul class="list-disc pl-5 text-xs text-on-surface-variant space-y-1">
+                        <li><strong>20 minutos:</strong> Sentado en una postura correcta.</li>
+                        <li><strong>8 minutos:</strong> De pie trabajando o en actividad pasiva.</li>
+                        <li><strong>2 minutos:</strong> De pie realizando movimiento o estiramientos suaves.</li>
+                    </ul>
+                </div>
+                
+                <div class="space-y-2">
+                    <h4 class="font-body-lg font-bold text-primary">💧 La Importancia de Hidratarse</h4>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        El aire acondicionado en las oficinas acelera la deshidratación silenciosa. Beber agua cada 45-60 minutos mantiene tu cerebro activo, previene el cansancio y reduce los dolores de cabeza.
+                    </p>
+                </div>
+                
+                <div class="space-y-2">
+                    <h4 class="font-body-lg font-bold text-primary">⚙️ Ajustes del Programador</h4>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Configura el <strong>Horario Laboral</strong> y las horas de <strong>Almuerzo</strong>. La extensión suspenderá automáticamente los recordatorios durante tu descanso y fuera de tu jornada para no interrumpir tu tiempo libre.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="pt-4 border-t border-outline-variant flex justify-end">
+                <button id="closeHelpBtnFooter" class="px-6 py-2.5 bg-primary text-white font-label-md rounded-full hover:bg-primary-container active:scale-95 transition-all shadow-md">
+                    Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safelist de clases dinámicas para Tailwind v4:
+         bg-secondary-container text-on-secondary-container font-bold
+         text-on-surface-variant
+    -->
+    <script src="options.js"></script>
+</body>
+</html>
