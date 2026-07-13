@@ -3,36 +3,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     try {
       const context = new (window.AudioContext || window.webkitAudioContext)();
       
-      // Beep 1
-      const osc1 = context.createOscillator();
-      const gain1 = context.createGain();
-      osc1.type = 'sine';
-      osc1.frequency.setValueAtTime(1500, context.currentTime);
-      gain1.gain.setValueAtTime(0.4, context.currentTime);
-      gain1.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.15);
-      osc1.connect(gain1);
-      gain1.connect(context.destination);
+      // Pitido doble repetido (beep beep ... beep beep)
+      const playBeep = (delay, duration) => {
+        const osc = context.createOscillator();
+        const gain = context.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1500, context.currentTime + delay);
+        gain.gain.setValueAtTime(0.8, context.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(context.destination);
+        osc.start(context.currentTime + delay);
+        osc.stop(context.currentTime + delay + duration);
+      };
+
+      // Primer bloque (beep beep)
+      playBeep(0.0, 0.15);
+      playBeep(0.2, 0.15);
       
-      // Beep 2
-      const osc2 = context.createOscillator();
-      const gain2 = context.createGain();
-      osc2.type = 'sine';
-      osc2.frequency.setValueAtTime(1500, context.currentTime + 0.20);
-      gain2.gain.setValueAtTime(0.4, context.currentTime + 0.20);
-      gain2.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.35);
-      osc2.connect(gain2);
-      gain2.connect(context.destination);
+      // Segundo bloque (beep beep)
+      playBeep(0.6, 0.15);
+      playBeep(0.8, 0.15);
       
-      osc1.start(context.currentTime);
-      osc1.stop(context.currentTime + 0.15);
-      
-      osc2.start(context.currentTime + 0.20);
-      osc2.stop(context.currentTime + 0.35);
-      
-      // Cerrar el contexto de audio tras finalizar para liberar recursos
+      // Cerrar el contexto de audio tras finalizar la secuencia (1.2 segundos en total)
       setTimeout(() => {
         context.close();
-      }, 500);
+      }, 1200);
       
       sendResponse({ status: "success" });
     } catch (e) {
