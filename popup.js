@@ -54,9 +54,12 @@ async function initPopup() {
   updateHydrationUI();
   updateStatusFooter(data);
   
-  // Iniciar la cuenta regresiva al segundo
+  // Iniciar la cuenta regresiva al segundo para refrescar ambas interfaces
   if (countdownInterval) clearInterval(countdownInterval);
-  countdownInterval = setInterval(updatePostureTimerUI, 1000);
+  countdownInterval = setInterval(() => {
+    updatePostureTimerUI();
+    updateHydrationUI();
+  }, 1000);
 }
 
 // Alternar entre las pestañas de la interfaz
@@ -195,7 +198,7 @@ function resetChecklist() {
 
 // Actualizar la interfaz de hidratación
 async function updateHydrationUI() {
-  const data = await chrome.storage.local.get(['waterIntake', 'waterGoal']);
+  const data = await chrome.storage.local.get(['waterIntake', 'waterGoal', 'hydrationNextBreak']);
   const waterIntake = data.waterIntake || 0;
   const waterGoal = data.waterGoal || 2000;
   
@@ -207,6 +210,23 @@ async function updateHydrationUI() {
   const waterProgressCircle = document.getElementById('waterProgressCircle');
   if (waterProgressCircle) {
     waterProgressCircle.style.setProperty('--progress-water', progressPct.toFixed(2));
+  }
+
+  // Actualizar cuenta regresiva de agua
+  const waterTimeText = document.getElementById('waterTimeRemainingText');
+  if (waterTimeText) {
+    if (!data.hydrationNextBreak) {
+      waterTimeText.textContent = "Siguiente recordatorio: -- min";
+    } else {
+      const now = Date.now();
+      const diffMs = data.hydrationNextBreak - now;
+      if (diffMs <= 0) {
+        waterTimeText.textContent = "Siguiente recordatorio: ¡Ya!";
+      } else {
+        const totalMinutes = Math.ceil(diffMs / 60000);
+        waterTimeText.textContent = `Siguiente recordatorio en: ${totalMinutes} min`;
+      }
+    }
   }
 }
 
@@ -238,12 +258,25 @@ async function resetWater() {
   }
 }
 
+// Función auxiliar para convertir formato HH:MM (24h) a hh:mm AM/PM (12h)
+function convertTo12Hour(timeStr) {
+  if (!timeStr) return "";
+  const [hoursStr, minutesStr] = timeStr.split(':');
+  let hours = parseInt(hoursStr, 10);
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 debe ser 12
+  return `${String(hours).padStart(2, '0')}:${minutesStr} ${ampm}`;
+}
+
 // Actualizar el footer con el estado del horario
 function updateStatusFooter(settings) {
   const footerText = document.getElementById('statusText');
   if (footerText) {
     const tracking = settings.weekendTracking ? "Lunes a Domingo" : "Lunes a Viernes";
-    footerText.textContent = `Activo: ${tracking} (${settings.workdayStart} - ${settings.workdayEnd})`;
+    const start12 = convertTo12Hour(settings.workdayStart);
+    const end12 = convertTo12Hour(settings.workdayEnd);
+    footerText.textContent = `Activo: ${tracking} (${start12} - ${end12})`;
   }
 }
 

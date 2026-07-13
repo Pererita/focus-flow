@@ -66,7 +66,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (settings.notificationAlerts) {
       chrome.notifications.create('posture-notif', {
         type: 'basic',
-        iconUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="100%" height="100%" fill="%2300685f"/><text x="50%" y="55%" font-size="64" font-family="sans-serif" fill="white" dominant-baseline="middle" text-anchor="middle">🧘</text></svg>',
+        iconUrl: 'icons/icon128.png',
         title: '🧘 ¡Hora de levantarse!',
         message: 'Llevas demasiado tiempo sentado. Levántate, camina y haz estiramientos leves por 2 minutos.',
         priority: 2
@@ -85,7 +85,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (settings.notificationAlerts) {
       chrome.notifications.create('hydration-notif', {
         type: 'basic',
-        iconUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="100%" height="100%" fill="%23008378"/><text x="50%" y="55%" font-size="64" font-family="sans-serif" fill="white" dominant-baseline="middle" text-anchor="middle">💧</text></svg>',
+        iconUrl: 'icons/icon128.png',
         title: '💧 ¡Hora de hidratarse!',
         message: 'Toma un sorbo de agua para mantener tu enfoque y energía en la oficina.',
         priority: 1
