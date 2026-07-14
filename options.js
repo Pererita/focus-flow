@@ -255,23 +255,27 @@ async function initHistory() {
   // Asociar clics a los botones de filtro personalizados (píldoras)
   const btn7 = document.getElementById('filter7');
   const btn30 = document.getElementById('filter30');
+  const btn90 = document.getElementById('filter90');
+  const btnYear = document.getElementById('filterYear');
   const btnAll = document.getElementById('filterAll');
   
   const handleFilterClick = (days, activeBtn) => {
     currentFilterDays = days;
     
     // Actualizar estados visuales de las píldoras
-    [btn7, btn30, btnAll].forEach(btn => {
+    [btn7, btn30, btn90, btnYear, btnAll].forEach(btn => {
       if (!btn) return;
-      btn.className = "px-4 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer";
+      btn.className = "px-3.5 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer";
     });
-    activeBtn.className = "px-4 py-1 rounded-full text-xs font-bold bg-primary text-white transition-all cursor-pointer shadow-sm";
+    activeBtn.className = "px-3.5 py-1 rounded-full text-xs font-bold bg-primary text-white transition-all cursor-pointer shadow-sm";
     
     filterHistory();
   };
   
   if (btn7) btn7.addEventListener('click', () => handleFilterClick('7', btn7));
   if (btn30) btn30.addEventListener('click', () => handleFilterClick('30', btn30));
+  if (btn90) btn90.addEventListener('click', () => handleFilterClick('90', btn90));
+  if (btnYear) btnYear.addEventListener('click', () => handleFilterClick('year', btnYear));
   if (btnAll) btnAll.addEventListener('click', () => handleFilterClick('all', btnAll));
   
   // Manejadores de eventos de la tabla de historial
@@ -295,6 +299,11 @@ function filterHistory() {
     filteredData = data.slice(0, 7);
   } else if (currentFilterDays === '30') {
     filteredData = data.slice(0, 30);
+  } else if (currentFilterDays === '90') {
+    filteredData = data.slice(0, 90);
+  } else if (currentFilterDays === 'year') {
+    const currentYear = String(new Date().getFullYear());
+    filteredData = data.filter(row => row.date.startsWith(currentYear));
   } else {
     filteredData = data;
   }
@@ -426,11 +435,12 @@ function exportHistoryToCsv() {
   }
   
   let csvContent = "\uFEFF"; // UTF-8 BOM para evitar problemas con acentos en Excel
-  csvContent += "Fecha,Pausas Ergonomicas,Agua Consumida (ml),Meta Diaria (ml),Meta Cumplida\n";
+  csvContent += "sep=;\n";   // Indicar explícitamente a Excel que use punto y coma como delimitador
+  csvContent += "Fecha;Pausas Ergonómicas;Agua Consumida (ml);Meta Diaria (ml);Meta Cumplida\n";
   
   filteredData.forEach(row => {
     const goalMet = row.waterIntake >= row.waterGoal ? "SI" : "NO";
-    csvContent += `"${row.date}",${row.postureBreaks},${row.waterIntake},${row.waterGoal},"${goalMet}"\n`;
+    csvContent += `"${row.date}";${row.postureBreaks};${row.waterIntake};${row.waterGoal};"${goalMet}"\n`;
   });
   
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });

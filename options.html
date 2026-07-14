@@ -211,10 +211,12 @@
                         </div>
                         <!-- Filtros e Exportación -->
                         <div class="flex flex-wrap items-center gap-3">
-                            <div class="flex bg-surface-container rounded-full p-1 border border-outline-variant">
-                                <button id="filter7" class="px-4 py-1 rounded-full text-xs font-bold bg-primary text-white transition-all cursor-pointer shadow-sm" data-days="7">7 días</button>
-                                <button id="filter30" class="px-4 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="30">30 días</button>
-                                <button id="filterAll" class="px-4 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="all">Todo</button>
+                            <div class="flex bg-surface-container rounded-full p-1 border border-outline-variant flex-wrap gap-1 md:gap-0">
+                                <button id="filter7" class="px-3.5 py-1 rounded-full text-xs font-bold bg-primary text-white transition-all cursor-pointer shadow-sm" data-days="7">7 días</button>
+                                <button id="filter30" class="px-3.5 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="30">30 días</button>
+                                <button id="filter90" class="px-3.5 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="90">90 días</button>
+                                <button id="filterYear" class="px-3.5 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="year">Este año</button>
+                                <button id="filterAll" class="px-3.5 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer" data-days="all">Todo</button>
                             </div>
                             <button id="exportCsvBtn" class="flex items-center gap-1.5 px-4 py-1.5 bg-primary hover:bg-surface-tint text-white rounded-full text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer">
                                 <span class="material-symbols-outlined text-[16px]">download</span>
