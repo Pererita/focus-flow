@@ -1,8 +1,12 @@
 # FocusFlow 🧘‍♂️💧
 
-**FocusFlow** es una extensión premium de Chrome diseñada para cuidar la salud ergonómica e hidratación de desarrolladores y profesionales que pasan largas horas frente a la pantalla. 
+[![Licencia](https://img.shields.io/badge/Licencia-MIT-green.svg)](LICENSE)
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue.svg)](manifest.json)
+[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red.svg)](CONTRIBUTING.md)
 
-Está diseñada siguiendo los estándares modernos de **Manifest V3**, utilizando un Service Worker de fondo y un canal Offscreen para la generación de alertas sonoras.
+**FocusFlow** es una extensión de Chrome de código abierto y diseño premium diseñada para cuidar la salud ergonómica y de hidratación de desarrolladores y profesionales que pasan largas horas frente a la pantalla.
+
+Está construida de forma nativa bajo la arquitectura **Manifest V3**, utilizando un Service Worker de fondo y un canal Offscreen para la generación de alertas sonoras eficientes.
 
 ---
 
@@ -70,4 +74,12 @@ Compress-Archive -Path manifest.json, background.js, popup.html, popup.js, optio
 ---
 
 ## 🔒 Privacidad de Datos
-**FocusFlow** respeta la privacidad de tu información. Todos los datos de configuración, tiempos de descanso e historial de hidratación son almacenados localmente en la base de datos interna de tu navegador a través de `chrome.storage.local`. **Ninguna información se transfiere fuera de tu equipo.**
+**FocusFlow** respeta la privacidad de tu información. Todos los datos de configuración, tiempos de descanso e historial de hidratación son almacenados localmente en la base de datos interna de tu navegador a través de `chrome.storage.local`. **Ninguna información se recopila ni se transfiere fuera de tu equipo.**
+
+---
+
+## 🤝 Comunidad y Licencia
+Este proyecto es de código abierto y está abierto a la participación de la comunidad:
+*   Para saber cómo colaborar, reportar errores o enviar mejoras, lee nuestra [Guía de Contribución](CONTRIBUTING.md).
+*   En todas nuestras interacciones promovemos un entorno amigable regulado por nuestro [Código de Conducta](CODE_OF_CONDUCT.md).
+*   El código de este proyecto está distribuido bajo la [Licencia MIT](LICENSE). Puedes usarlo, modificarlo y compartirlo libremente.
