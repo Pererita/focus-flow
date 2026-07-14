@@ -56,12 +56,13 @@ Para subir la extensión a la **Chrome Web Store Console**, se debe subir un ún
 *   `style.css` (Estilos compilados de Tailwind v4)
 *   `icons/` (Carpeta con todos los iconos PNG de producción: `icon16.png`, `icon48.png`, `icon128.png`, `icon.ico`)
 
-### ❌ Archivos a Excluir (Ignorados por Git en `.gitignore`):
+### ❌ Archivos a Excluir (Evitar incluirlos en el ZIP):
 *   La carpeta de desarrollo y control de versiones `.git/`
 *   El archivo `.gitignore`
 *   El archivo de empaquetado `.zip` compilado
-*   La carpeta de capturas de pantalla de la tienda `images/`
-*   El archivo `README.md`
+*   La carpeta de imágenes y capturas de la tienda `images/`
+*   El archivo de licencia `LICENSE`
+*   Los archivos de documentación `README.md`, `CONTRIBUTING.md` y `CODE_OF_CONDUCT.md`
 *   Cualquier script temporal (`package.json`, `package-lock.json`, `.temp_tailwind/`)
 
 ### ⚡ Comando de PowerShell para Empaquetar (Windows):
