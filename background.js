@@ -64,7 +64,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
   if (alarm.name === 'postureAlarm') {
     if (settings.notificationAlerts) {
-      chrome.notifications.create('posture-notif', {
+      chrome.notifications.create('posture-notif-' + Date.now(), {
         type: 'basic',
         iconUrl: chrome.runtime.getURL('icons/icon128.png'),
         title: '🧘 ¡Hora de levantarse!',
@@ -83,7 +83,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   
   else if (alarm.name === 'hydrationAlarm') {
     if (settings.notificationAlerts) {
-      chrome.notifications.create('hydration-notif', {
+      chrome.notifications.create('hydration-notif-' + Date.now(), {
         type: 'basic',
         iconUrl: chrome.runtime.getURL('icons/icon128.png'),
         title: '💧 ¡Hora de hidratarse!',

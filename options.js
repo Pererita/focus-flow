@@ -235,6 +235,7 @@ let historyData = [];
 let filteredData = [];
 let currentPage = 1;
 const rowsPerPage = 7;
+let currentFilterDays = '7';
 
 // Inicializar el historial
 async function initHistory() {
@@ -251,13 +252,33 @@ async function initHistory() {
     waterGoal: history[date].waterGoal || 2000
   }));
   
+  // Asociar clics a los botones de filtro personalizados (píldoras)
+  const btn7 = document.getElementById('filter7');
+  const btn30 = document.getElementById('filter30');
+  const btnAll = document.getElementById('filterAll');
+  
+  const handleFilterClick = (days, activeBtn) => {
+    currentFilterDays = days;
+    
+    // Actualizar estados visuales de las píldoras
+    [btn7, btn30, btnAll].forEach(btn => {
+      if (!btn) return;
+      btn.className = "px-4 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary transition-all cursor-pointer";
+    });
+    activeBtn.className = "px-4 py-1 rounded-full text-xs font-bold bg-primary text-white transition-all cursor-pointer shadow-sm";
+    
+    filterHistory();
+  };
+  
+  if (btn7) btn7.addEventListener('click', () => handleFilterClick('7', btn7));
+  if (btn30) btn30.addEventListener('click', () => handleFilterClick('30', btn30));
+  if (btnAll) btnAll.addEventListener('click', () => handleFilterClick('all', btnAll));
+  
   // Manejadores de eventos de la tabla de historial
-  const filterSelect = document.getElementById('historyFilter');
   const prevBtn = document.getElementById('prevPageBtn');
   const nextBtn = document.getElementById('nextPageBtn');
   const exportBtn = document.getElementById('exportCsvBtn');
   
-  if (filterSelect) filterSelect.addEventListener('change', filterHistory);
   if (prevBtn) prevBtn.addEventListener('click', prevHistoryPage);
   if (nextBtn) nextBtn.addEventListener('click', nextHistoryPage);
   if (exportBtn) exportBtn.addEventListener('click', exportHistoryToCsv);
@@ -268,13 +289,11 @@ async function initHistory() {
 
 // Filtrar historial según selección
 function filterHistory() {
-  const filterSelect = document.getElementById('historyFilter');
-  const filterVal = filterSelect ? filterSelect.value : '7';
   const data = [...historyData];
   
-  if (filterVal === '7') {
+  if (currentFilterDays === '7') {
     filteredData = data.slice(0, 7);
-  } else if (filterVal === '30') {
+  } else if (currentFilterDays === '30') {
     filteredData = data.slice(0, 30);
   } else {
     filteredData = data;
@@ -354,11 +373,11 @@ function renderHistoryTable() {
       </td>
       <td class="px-6 py-4 whitespace-nowrap">
         ${goalMet 
-          ? `<span class="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
+          ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200 shadow-sm">
               <span class="material-symbols-outlined text-[14px]">done</span> Cumplida
              </span>`
-          : `<span class="inline-flex items-center gap-1 px-3 py-1 bg-outline-variant/20 text-on-surface-variant text-xs font-bold rounded-full">
-              meta: ${row.waterGoal} ml
+          : `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50/50 text-blue-600 text-xs font-bold rounded-full border border-blue-100/70 shadow-sm">
+              <span class="material-symbols-outlined text-[14px] text-blue-400">water_drop</span> Meta: ${row.waterGoal} ml
              </span>`
         }
       </td>
@@ -388,6 +407,15 @@ function nextHistoryPage() {
     currentPage++;
     renderHistoryTable();
   }
+}
+
+// Obtener string de fecha local YYYY-MM-DD
+function getLocalDateString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 // Exportar historial a CSV
