@@ -20,3 +20,6 @@ package-lock.json
 # Referencias de diseño
 design_reference/
 *.jpg
+
+# Archivos de empaquetado y distribución
+*.zip
