@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "FocusFlow",
   "version": "1.0",
-  "description": "Tu compañero de bienestar. Te recuerda levantarte, estirarte y beber agua durante tu jornada laboral.",
+  "description": "Tu compañero de bienestar. Automatiza recordatorios ergonómicos (regla 20-8-2) y controla tu hidratación diaria para un enfoque saludable.",
   "permissions": [
     "storage",
     "alarms",
