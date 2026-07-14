@@ -16,6 +16,7 @@ const DEFAULT_SETTINGS = {
 // Cargar opciones al abrir la página
 document.addEventListener('DOMContentLoaded', async () => {
   await loadSettings();
+  await initHistory();
   
   // Asociar eventos de botones
   document.getElementById('saveBtn').addEventListener('click', saveSettings);
@@ -30,6 +31,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Interactividad de navegación en la barra lateral
   setupSidebarNavigation();
+
+  // Escuchar si la URL tiene un hash específico para scroll
+  handleUrlHash();
+
+  // Reactividad: refrescar historial en tiempo real si cambia en background
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.history) {
+      initHistory();
+    }
+  });
 });
 
 // Cargar valores del storage
@@ -178,22 +189,26 @@ function setupSidebarNavigation() {
   const navSchedule = document.getElementById('navSchedule');
   const navGoals = document.getElementById('navGoals');
   const navAlerts = document.getElementById('navAlerts');
+  const navHistory = document.getElementById('navHistory');
   
-  const navItems = [navSchedule, navGoals, navAlerts];
+  const navItems = [navSchedule, navGoals, navAlerts, navHistory];
   const sectionTitle = document.getElementById('sectionTitle');
   
   const sections = {
     schedule: { el: document.getElementById('schedule'), title: "Configuración de Horarios" },
     intervals: { el: document.getElementById('intervals'), title: "Configuración de Metas" },
-    alerts: { el: document.getElementById('alerts'), title: "Configuración de Alertas" }
+    alerts: { el: document.getElementById('alerts'), title: "Configuración de Alertas" },
+    history: { el: document.getElementById('history'), title: "Historial de Actividad" }
   };
   
   navItems.forEach((item, idx) => {
+    if (!item) return;
     item.addEventListener('click', (e) => {
       e.preventDefault();
       
       // Activar píldora visual en el sidebar
       navItems.forEach(i => {
+        if (!i) return;
         i.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'font-bold');
         i.classList.add('text-on-surface-variant');
       });
@@ -214,3 +229,203 @@ function setupSidebarNavigation() {
     });
   });
 }
+
+// Variables del Historial de Actividad
+let historyData = [];
+let filteredData = [];
+let currentPage = 1;
+const rowsPerPage = 7;
+
+// Inicializar el historial
+async function initHistory() {
+  const data = await chrome.storage.local.get(['history']);
+  const history = data.history || {};
+  
+  // Convertir el objeto de historial a un array ordenado descendentemente por fecha
+  const sortedDates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
+  
+  historyData = sortedDates.map(date => ({
+    date,
+    postureBreaks: history[date].postureBreaks || 0,
+    waterIntake: history[date].waterIntake || 0,
+    waterGoal: history[date].waterGoal || 2000
+  }));
+  
+  // Manejadores de eventos de la tabla de historial
+  const filterSelect = document.getElementById('historyFilter');
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  const exportBtn = document.getElementById('exportCsvBtn');
+  
+  if (filterSelect) filterSelect.addEventListener('change', filterHistory);
+  if (prevBtn) prevBtn.addEventListener('click', prevHistoryPage);
+  if (nextBtn) nextBtn.addEventListener('click', nextHistoryPage);
+  if (exportBtn) exportBtn.addEventListener('click', exportHistoryToCsv);
+  
+  // Renderizar la tabla con el filtro inicial
+  filterHistory();
+}
+
+// Filtrar historial según selección
+function filterHistory() {
+  const filterSelect = document.getElementById('historyFilter');
+  const filterVal = filterSelect ? filterSelect.value : '7';
+  const data = [...historyData];
+  
+  if (filterVal === '7') {
+    filteredData = data.slice(0, 7);
+  } else if (filterVal === '30') {
+    filteredData = data.slice(0, 30);
+  } else {
+    filteredData = data;
+  }
+  
+  currentPage = 1;
+  renderHistoryTable();
+}
+
+// Renderizar filas de la tabla
+function renderHistoryTable() {
+  const tableBody = document.getElementById('historyTableBody');
+  const paginationInfo = document.getElementById('historyPaginationInfo');
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  
+  if (!tableBody) return;
+  tableBody.innerHTML = '';
+  
+  const totalRows = filteredData.length;
+  const totalPages = Math.max(Math.ceil(totalRows / rowsPerPage), 1);
+  
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+  
+  const startIdx = (currentPage - 1) * rowsPerPage;
+  const endIdx = startIdx + rowsPerPage;
+  const pageRows = filteredData.slice(startIdx, endIdx);
+  
+  if (pageRows.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td colspan="4" class="px-6 py-8 text-center text-on-surface-variant font-medium bg-surface-container-lowest">
+        No hay registros de actividad guardados en este período.
+      </td>
+    `;
+    tableBody.appendChild(tr);
+    if (paginationInfo) paginationInfo.textContent = "Mostrando 0 de 0 días";
+    if (prevBtn) prevBtn.disabled = true;
+    if (nextBtn) nextBtn.disabled = true;
+    return;
+  }
+  
+  pageRows.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.className = "hover:bg-surface-container-low transition-colors";
+    
+    // Formatear Fecha (ej. 2026-07-14 -> Lunes, 14 Jul)
+    const dateObj = new Date(row.date + 'T00:00:00');
+    const options = { weekday: 'long', day: 'numeric', month: 'short' };
+    const dateStr = dateObj.toLocaleDateString('es-ES', options);
+    const capitalizedDateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+    
+    const waterProgress = Math.min((row.waterIntake / row.waterGoal) * 100, 100);
+    const goalMet = row.waterIntake >= row.waterGoal;
+    
+    tr.innerHTML = `
+      <td class="px-6 py-4 font-bold text-on-surface whitespace-nowrap">${capitalizedDateStr}</td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[18px] text-primary">accessibility_new</span>
+          <span class="font-bold text-on-surface">${row.postureBreaks}</span>
+          <span class="text-xs text-on-surface-variant">pausas</span>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex flex-col gap-1">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[18px] text-blue-500">local_drink</span>
+            <span class="font-bold text-on-surface">${row.waterIntake} ml</span>
+            <span class="text-xs text-on-surface-variant">(${waterProgress.toFixed(0)}%)</span>
+          </div>
+          <div class="w-24 h-1.5 bg-outline-variant/30 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-500 rounded-full" style="width: ${waterProgress}%"></div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        ${goalMet 
+          ? `<span class="inline-flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full border border-green-200">
+              <span class="material-symbols-outlined text-[14px]">done</span> Cumplida
+             </span>`
+          : `<span class="inline-flex items-center gap-1 px-3 py-1 bg-outline-variant/20 text-on-surface-variant text-xs font-bold rounded-full">
+              meta: ${row.waterGoal} ml
+             </span>`
+        }
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+  
+  if (paginationInfo) {
+    paginationInfo.textContent = `Página ${currentPage} de ${totalPages} (Total: ${totalRows} días)`;
+  }
+  if (prevBtn) prevBtn.disabled = currentPage === 1;
+  if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+}
+
+// Paginación anterior
+function prevHistoryPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderHistoryTable();
+  }
+}
+
+// Paginación siguiente
+function nextHistoryPage() {
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderHistoryTable();
+  }
+}
+
+// Exportar historial a CSV
+function exportHistoryToCsv() {
+  if (filteredData.length === 0) {
+    alert("No hay datos para exportar.");
+    return;
+  }
+  
+  let csvContent = "\uFEFF"; // UTF-8 BOM para evitar problemas con acentos en Excel
+  csvContent += "Fecha,Pausas Ergonomicas,Agua Consumida (ml),Meta Diaria (ml),Meta Cumplida\n";
+  
+  filteredData.forEach(row => {
+    const goalMet = row.waterIntake >= row.waterGoal ? "SI" : "NO";
+    csvContent += `"${row.date}",${row.postureBreaks},${row.waterIntake},${row.waterGoal},"${goalMet}"\n`;
+  });
+  
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  
+  link.setAttribute("href", url);
+  link.setAttribute("download", `focusflow_historial_${getLocalDateString()}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Activar la pestaña correcta basándose en el hash de la URL
+function handleUrlHash() {
+  if (window.location.hash === '#history') {
+    setTimeout(() => {
+      const navHistory = document.getElementById('navHistory');
+      if (navHistory) {
+        navHistory.click();
+      }
+    }, 150);
+  }
+}
+

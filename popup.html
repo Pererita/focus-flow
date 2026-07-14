@@ -30,6 +30,9 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        .check-icon.hidden {
+            display: none !important;
+        }
         .circular-progress {
             background: conic-gradient(
                 #008378 calc(var(--progress) * 1%),
@@ -55,9 +58,14 @@
                     <span class="font-label-md text-label-md text-on-surface-variant">Tu compañero de bienestar</span>
                 </div>
             </div>
-            <button id="settingsBtn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-200">
-                <span class="material-symbols-outlined text-on-surface-variant">settings</span>
-            </button>
+            <div class="flex items-center gap-1">
+                <button id="historyBtn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-200" title="Ver Historial de Actividad">
+                    <span class="material-symbols-outlined text-on-surface-variant">history</span>
+                </button>
+                <button id="settingsBtn" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-200" title="Configurar FocusFlow">
+                    <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+                </button>
+            </div>
         </header>
 
         <!-- Main Content Scroll Area -->

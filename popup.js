@@ -15,7 +15,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('skipBtn').addEventListener('click', skipPostureBreak);
   document.getElementById('doneBtn').addEventListener('click', donePostureBreak);
   
-  // Botón de Opciones (Engranaje)
+  // Botones de Cabecera (Historial y Configuración)
+  document.getElementById('historyBtn').addEventListener('click', () => {
+    chrome.runtime.openOptionsPage(() => {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs && tabs[0]) {
+          chrome.tabs.update(tabs[0].id, { url: chrome.runtime.getURL('options.html#history') });
+        }
+      });
+    });
+  });
+  
   document.getElementById('settingsBtn').addEventListener('click', () => {
     chrome.runtime.openOptionsPage();
   });
@@ -210,7 +220,9 @@ function skipPostureBreak() {
 }
 
 // Registrar como terminada la pausa de estiramientos
-function donePostureBreak() {
+async function donePostureBreak() {
+  await logPostureBreakToHistory();
+
   // Desmarcar los estiramientos de la checklist
   resetChecklist();
   
@@ -273,9 +285,13 @@ async function updateHydrationUI() {
 
 // Agregar agua
 async function addWater(amount) {
-  const data = await chrome.storage.local.get(['waterIntake']);
+  const data = await chrome.storage.local.get(['waterIntake', 'waterGoal']);
   const current = data.waterIntake || 0;
-  await chrome.storage.local.set({ waterIntake: current + amount });
+  const goal = data.waterGoal || 2000;
+  const newIntake = current + amount;
+  
+  await chrome.storage.local.set({ waterIntake: newIntake });
+  await logWaterIntakeToHistory(newIntake);
 }
 
 // Agregar cantidad de agua personalizada
@@ -296,6 +312,7 @@ async function addCustomWater() {
 async function resetWater() {
   if (confirm("¿Deseas reiniciar tu registro de agua de hoy?")) {
     await chrome.storage.local.set({ waterIntake: 0 });
+    await logWaterIntakeToHistory(0);
   }
 }
 
@@ -341,4 +358,45 @@ function toggleCheck(el) {
     text.classList.remove('line-through', 'opacity-60');
   }
 }
+
+// Obtener string de fecha local YYYY-MM-DD
+function getLocalDateString() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Guardar pausa ergonómica en el historial
+async function logPostureBreakToHistory() {
+  const todayStr = getLocalDateString();
+  const data = await chrome.storage.local.get(['history', 'waterGoal']);
+  const history = data.history || {};
+  const goal = data.waterGoal || 2000;
+  
+  if (!history[todayStr]) {
+    history[todayStr] = { postureBreaks: 0, waterIntake: 0, waterGoal: goal };
+  }
+  history[todayStr].postureBreaks = (history[todayStr].postureBreaks || 0) + 1;
+  
+  await chrome.storage.local.set({ history });
+}
+
+// Guardar consumo de agua en el historial
+async function logWaterIntakeToHistory(newIntake) {
+  const todayStr = getLocalDateString();
+  const data = await chrome.storage.local.get(['history', 'waterGoal']);
+  const history = data.history || {};
+  const goal = data.waterGoal || 2000;
+  
+  if (!history[todayStr]) {
+    history[todayStr] = { postureBreaks: 0, waterIntake: 0, waterGoal: goal };
+  }
+  history[todayStr].waterIntake = newIntake;
+  history[todayStr].waterGoal = goal;
+  
+  await chrome.storage.local.set({ history });
+}
+
 
