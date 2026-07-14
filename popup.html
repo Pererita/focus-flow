@@ -167,8 +167,8 @@
 
             <!-- Visual Decorative Element -->
             <div class="relative h-12 w-full rounded-xl overflow-hidden mt-2">
-                <div class="absolute inset-0 bg-gradient-to-r from-background to-transparent flex items-center px-4">
-                    <span class="text-on-surface-variant font-label-md max-w-[200px]">Mantente constante, lo estás haciendo genial.</span>
+                <div class="absolute inset-0 bg-gradient-to-r from-background to-transparent flex items-center justify-center px-4 w-full">
+                    <span class="text-on-surface-variant font-label-md text-center w-full">Mantente constante, lo estás haciendo genial.</span>
                 </div>
             </div>
         </main>
@@ -181,14 +181,14 @@
                 <span class="font-label-md text-label-md">Ergonomía</span>
             </button>
             <!-- Hydration Tab -->
-            <button id="hydraTabBtn" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-all active:scale-90 duration-150 cursor-pointer">
+            <button id="hydraTabBtn" class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-blue-50 hover:text-blue-600 transition-all duration-150 active:scale-90 cursor-pointer rounded-xl">
                 <span class="material-symbols-outlined">water_drop</span>
                 <span class="font-label-md text-label-md">Hidratación</span>
             </button>
         </nav>
 
         <!-- Footer / Status Bar -->
-        <footer class="bg-surface-container-low px-container-padding py-1.5 flex items-center">
+        <footer class="bg-surface-container-high px-container-padding py-1.5 flex items-center justify-center w-full">
             <span class="w-2 h-2 rounded-full bg-primary mr-2 animate-pulse"></span>
             <span id="statusText" class="font-label-md text-[10px] text-outline tracking-wider uppercase">Activo: Horario laboral (08:00 - 17:00)</span>
         </footer>
@@ -198,6 +198,7 @@
          text-on-surface-variant hover:bg-surface-container-high
          hidden bg-white border-outline-variant border-primary-container
          line-through opacity-60 text-white text-primary
+         bg-blue-600 text-white hover:bg-blue-50 hover:text-blue-600
     -->
     <script src="popup.js"></script>
 </body>

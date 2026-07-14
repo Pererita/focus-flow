@@ -69,19 +69,21 @@ function switchTab(tabName) {
   const ergoView = document.getElementById('ergoView');
   const hydraView = document.getElementById('hydraView');
   
-  // Clases CSS para estado Activo/Inactivo
-  const activeClasses = ['bg-primary-container', 'text-on-primary-container', 'rounded-xl'];
-  const inactiveClasses = ['text-on-surface-variant', 'hover:bg-surface-container-high'];
+  // Clases CSS diferenciadas para cada pestaña
+  const ergoActiveClasses = ['bg-primary-container', 'text-on-primary-container', 'rounded-xl'];
+  const ergoInactiveClasses = ['text-on-surface-variant', 'hover:bg-surface-container-high'];
+  const hydraActiveClasses = ['bg-blue-600', 'text-white', 'rounded-xl'];
+  const hydraInactiveClasses = ['text-on-surface-variant', 'hover:bg-blue-50', 'hover:text-blue-600'];
   
   if (tabName === 'ergo') {
     // Activar Ergonomía
-    ergoTabBtn.classList.add(...activeClasses);
-    ergoTabBtn.classList.remove(...inactiveClasses);
+    ergoTabBtn.classList.add(...ergoActiveClasses);
+    ergoTabBtn.classList.remove(...ergoInactiveClasses);
     ergoTabBtn.querySelector('span').style.fontVariationSettings = "'FILL' 1";
     
     // Desactivar Hidratación
-    hydraTabBtn.classList.remove(...activeClasses);
-    hydraTabBtn.classList.add(...inactiveClasses);
+    hydraTabBtn.classList.remove(...hydraActiveClasses);
+    hydraTabBtn.classList.add(...hydraInactiveClasses);
     hydraTabBtn.querySelector('span').style.fontVariationSettings = "'FILL' 0";
     
     // Mostrar/ocultar vistas
@@ -89,13 +91,13 @@ function switchTab(tabName) {
     hydraView.classList.add('hidden');
   } else {
     // Activar Hidratación
-    hydraTabBtn.classList.add(...activeClasses);
-    hydraTabBtn.classList.remove(...inactiveClasses);
+    hydraTabBtn.classList.add(...hydraActiveClasses);
+    hydraTabBtn.classList.remove(...hydraInactiveClasses);
     hydraTabBtn.querySelector('span').style.fontVariationSettings = "'FILL' 1";
     
     // Desactivar Ergonomía
-    ergoTabBtn.classList.remove(...activeClasses);
-    ergoTabBtn.classList.add(...inactiveClasses);
+    ergoTabBtn.classList.remove(...ergoActiveClasses);
+    ergoTabBtn.classList.add(...ergoInactiveClasses);
     ergoTabBtn.querySelector('span').style.fontVariationSettings = "'FILL' 0";
     
     // Mostrar/ocultar vistas
@@ -106,20 +108,40 @@ function switchTab(tabName) {
 
 // Actualizar la interfaz del temporizador de postura
 async function updatePostureTimerUI() {
-  const data = await chrome.storage.local.get(['postureNextBreak', 'isPosturePaused', 'postureInterval']);
+  const data = await chrome.storage.local.get(['postureNextBreak', 'isPosturePaused', 'postureInterval', 'postureRemainingMs']);
   const timerText = document.getElementById('timerText');
   const pauseBtn = document.getElementById('pauseBtn');
   const progressCircle = document.getElementById('progressCircle');
+  const doneBtn = document.getElementById('doneBtn');
   
   if (data.isPosturePaused) {
-    timerText.textContent = "Pausado";
+    const remainingMs = data.postureRemainingMs || (data.postureInterval || 30) * 60 * 1000;
+    const totalSeconds = Math.floor(remainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    
+    timerText.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    
+    const intervalMinutes = data.postureInterval || currentIntervalMinutes;
+    const totalIntervalSeconds = intervalMinutes * 60;
+    const progressPct = totalIntervalSeconds > 0 ? (totalSeconds / totalIntervalSeconds) * 100 : 100;
+    progressCircle.style.setProperty('--progress', progressPct.toFixed(2));
+
     timerText.classList.add('text-on-surface-variant');
     timerText.classList.remove('text-primary');
     pauseBtn.textContent = "Reanudar";
-    progressCircle.style.setProperty('--progress', '100');
+    
+    // Deshabilitar botón "Listo" en pausa
+    if (doneBtn) {
+      doneBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+    }
     return;
   }
   
+  // Habilitar botón "Listo" cuando está activo
+  if (doneBtn) {
+    doneBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+  }
   pauseBtn.textContent = "Pausar";
   timerText.classList.remove('text-on-surface-variant');
   timerText.classList.add('text-primary');
@@ -143,10 +165,8 @@ async function updatePostureTimerUI() {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   
-  // Renderizado del formato MM:SS
   timerText.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   
-  // Calcular porcentaje de progreso circular
   const intervalMinutes = data.postureInterval || currentIntervalMinutes;
   const totalIntervalSeconds = intervalMinutes * 60;
   const progressPct = (totalSeconds / totalIntervalSeconds) * 100;
@@ -154,11 +174,32 @@ async function updatePostureTimerUI() {
   progressCircle.style.setProperty('--progress', progressPct.toFixed(2));
 }
 
-// Pausar/Reanudar temporizador de postura
+// Pausar/Reanudar temporizador de postura al segundo
 async function togglePausePosture() {
-  const data = await chrome.storage.local.get(['isPosturePaused']);
-  const newState = !data.isPosturePaused;
-  await chrome.storage.local.set({ isPosturePaused: newState });
+  const data = await chrome.storage.local.get(['isPosturePaused', 'postureNextBreak', 'postureInterval', 'postureRemainingMs']);
+  const isPaused = data.isPosturePaused || false;
+  
+  if (!isPaused) {
+    // Pausar: calcular tiempo restante y guardar en storage
+    const now = Date.now();
+    let remainingMs = data.postureNextBreak ? (data.postureNextBreak - now) : (data.postureInterval || 30) * 60 * 1000;
+    if (remainingMs < 0) remainingMs = 0;
+    
+    await chrome.storage.local.set({
+      isPosturePaused: true,
+      postureRemainingMs: remainingMs
+    });
+  } else {
+    // Reanudar: calcular nueva fecha de break en base al tiempo restante
+    const remainingMs = data.postureRemainingMs || (data.postureInterval || 30) * 60 * 1000;
+    const newNextBreak = Date.now() + remainingMs;
+    
+    await chrome.storage.local.set({
+      isPosturePaused: false,
+      postureNextBreak: newNextBreak
+    });
+    await chrome.storage.local.remove('postureRemainingMs');
+  }
 }
 
 // Saltar la pausa actual

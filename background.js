@@ -162,7 +162,11 @@ async function rescheduleAlarms() {
   await chrome.alarms.clearAll();
   
   if (!settings.isPosturePaused) {
-    await scheduleNextAlarm('postureAlarm', settings.postureInterval, settings);
+    if (settings.postureNextBreak && settings.postureNextBreak > Date.now()) {
+      await chrome.alarms.create('postureAlarm', { when: settings.postureNextBreak });
+    } else {
+      await scheduleNextAlarm('postureAlarm', settings.postureInterval, settings);
+    }
   } else {
     await chrome.storage.local.remove('postureNextBreak');
   }
