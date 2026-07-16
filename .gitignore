@@ -23,3 +23,6 @@ design_reference/
 
 # Archivos de empaquetado y distribución
 *.zip
+
+# Subproyecto web (otro repositorio)
+focus-flow-web/
