@@ -1,10 +1,10 @@
-# Guía de Contribución a FocusFlow 🚀
+# Guía de Contribución a FocusFlow
 
 ¡Gracias por tu interés en contribuir a **FocusFlow**! Como proyecto Open Source, valoramos enormemente las contribuciones de la comunidad para mejorar la salud ergonómica de los desarrolladores en todo el mundo.
 
 ---
 
-## 📋 ¿Cómo puedo contribuir?
+## ¿Cómo puedo contribuir?
 
 ### 1. Reportar Errores (Bugs)
 Si encuentras un error o comportamiento inesperado:
@@ -29,7 +29,7 @@ Si deseas escribir código para solucionar un bug o implementar una nueva funcio
 
 ---
 
-## 📝 Convención de Confirmaciones de Git (Conventional Commits)
+## Convención de Confirmaciones de Git (Conventional Commits)
 Para mantener un historial de cambios limpio y legible, todos los mensajes de commit de este proyecto deben seguir estrictamente el estándar de **Conventional Commits 1.0.0** y redactarse en **español**:
 
 Estructura:
@@ -48,5 +48,5 @@ Tipos estándares permitidos:
 
 ---
 
-## 🔒 Código de Conducta
+## Código de Conducta
 Al participar en este proyecto, te comprometes a seguir y respetar nuestro [Código de Conducta](CODE_OF_CONDUCT.md) en todas las interacciones de la comunidad.

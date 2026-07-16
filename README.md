@@ -1,8 +1,8 @@
-# FocusFlow 🧘‍♂️💧
+# FocusFlow
 
 [![Licencia](https://img.shields.io/badge/Licencia-MIT-green.svg)](LICENSE)
 [![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue.svg)](manifest.json)
-[![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-red.svg)](CONTRIBUTING.md)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Activo-red.svg)](CONTRIBUTING.md)
 
 **FocusFlow** es una extensión de Chrome de código abierto y diseño premium diseñada para cuidar la salud ergonómica y de hidratación de desarrolladores y profesionales que pasan largas horas frente a la pantalla.
 
@@ -10,17 +10,17 @@ Está construida de forma nativa bajo la arquitectura **Manifest V3**, utilizand
 
 ---
 
-## ✨ Características Principales
+## Características Principales
 
-*   **🧘 Recordatorio de Postura (Ergonomía):** Basado en el principio ergonómico de la regla 20-8-2 de la Universidad de Cornell. Te recuerda levantarte cada 30 minutos para realizar estiramientos leves por 2 minutos.
-*   **💧 Control de Hidratación:** Alarma inteligente horaria para recordarte beber agua de forma regular, manteniendo la concentración y previniendo la fatiga. Incluye contador regresivo activo y registro diario de consumo.
-*   **📊 Historial de Actividad Local:** Panel de control de rendimiento diario con visualización de pausas completadas y porcentaje de agua consumida. Filtros dinámicos (7 días, 30 días, 90 días, anual, todo) y paginación rápida.
-*   **📥 Exportación a Excel (CSV):** Descarga todo tu historial en formato CSV compatible con Microsoft Excel y Google Drive/Sheets (delimitado con punto y coma y directiva `sep=;` integrada).
-*   **🕒 Horario Laboral Inteligente:** Configuración de rangos de trabajo y pausa de almuerzo para suspender automáticamente las alarmas fuera de tu horario y fines de semana.
+*   **Recordatorio de Postura (Ergonomía):** Basado en el principio ergonómico de la regla 20-8-2 de la Universidad de Cornell. Te recuerda levantarte cada 30 minutos para realizar estiramientos leves por 2 minutos.
+*   **Control de Hidratación:** Alarma inteligente horaria para recordarte beber agua de forma regular, manteniendo la concentración y previniendo la fatiga. Incluye contador regresivo activo y registro diario de consumo.
+*   **Historial de Actividad Local:** Panel de control de rendimiento diario con visualización de pausas completadas y porcentaje de agua consumida. Filtros dinámicos (7 días, 30 días, 90 días, anual, todo) y paginación rápida.
+*   **Exportación a Excel (CSV):** Descarga todo tu historial en formato CSV compatible con Microsoft Excel y Google Drive/Sheets (delimitado con punto y coma y directiva `sep=;` integrada).
+*   **Horario Laboral Inteligente:** Configuración de rangos de trabajo y pausa de almuerzo para suspender automáticamente las alarmas fuera de tu horario y fines de semana.
 
 ---
 
-## 🛠️ Arquitectura Técnica (Manifest V3)
+## Arquitectura Técnica (Manifest V3)
 
 La extensión utiliza una arquitectura asíncrona desacoplada de alto rendimiento:
 
@@ -31,7 +31,7 @@ La extensión utiliza una arquitectura asíncrona desacoplada de alto rendimient
 
 ---
 
-## 💻 Instalación y Desarrollo Local
+## Instalación y Desarrollo Local
 
 Para cargar la extensión en modo de desarrollo en tu navegador:
 
@@ -43,11 +43,11 @@ Para cargar la extensión en modo de desarrollo en tu navegador:
 
 ---
 
-## 📦 Empaquetado y Distribución
+## Empaquetado y Distribución
 
 Para subir la extensión a la **Chrome Web Store Console**, se debe subir un único archivo comprimido en formato `.zip` que contenga únicamente los recursos de producción.
 
-### 📋 Archivos a Incluir en el ZIP:
+### Archivos a Incluir en el ZIP:
 *   `manifest.json` (Configuración obligatoria de la extensión)
 *   `background.js` (Service Worker)
 *   `popup.html` y `popup.js` (Popup interactivo)
@@ -56,7 +56,7 @@ Para subir la extensión a la **Chrome Web Store Console**, se debe subir un ún
 *   `style.css` (Estilos compilados de Tailwind v4)
 *   `icons/` (Carpeta con todos los iconos PNG de producción: `icon16.png`, `icon48.png`, `icon128.png`, `icon.ico`)
 
-### ❌ Archivos a Excluir (Evitar incluirlos en el ZIP):
+### Archivos a Excluir (Evitar incluirlos en el ZIP):
 *   La carpeta de desarrollo y control de versiones `.git/`
 *   El archivo `.gitignore`
 *   El archivo de empaquetado `.zip` compilado
@@ -65,7 +65,7 @@ Para subir la extensión a la **Chrome Web Store Console**, se debe subir un ún
 *   Los archivos de documentación `README.md`, `CONTRIBUTING.md` y `CODE_OF_CONDUCT.md`
 *   Cualquier script temporal (`package.json`, `package-lock.json`, `.temp_tailwind/`)
 
-### ⚡ Comando de PowerShell para Empaquetar (Windows):
+### Comando de PowerShell para Empaquetar (Windows):
 Ejecuta el siguiente comando en PowerShell estando posicionado en la raíz de la extensión para generar de forma inmediata el archivo ZIP limpio:
 
 ```powershell
@@ -74,12 +74,12 @@ Compress-Archive -Path manifest.json, background.js, popup.html, popup.js, optio
 
 ---
 
-## 🔒 Privacidad de Datos
+## Privacidad de Datos
 **FocusFlow** respeta la privacidad de tu información. Todos los datos de configuración, tiempos de descanso e historial de hidratación son almacenados localmente en la base de datos interna de tu navegador a través de `chrome.storage.local`. **Ninguna información se recopila ni se transfiere fuera de tu equipo.**
 
 ---
 
-## 🤝 Comunidad y Licencia
+## Comunidad y Licencia
 Este proyecto es de código abierto y está abierto a la participación de la comunidad:
 *   Para saber cómo colaborar, reportar errores o enviar mejoras, lee nuestra [Guía de Contribución](CONTRIBUTING.md).
 *   En todas nuestras interacciones promovemos un entorno amigable regulado por nuestro [Código de Conducta](CODE_OF_CONDUCT.md).
